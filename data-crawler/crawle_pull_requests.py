@@ -566,18 +566,14 @@ class Features:
         return features
 
 def write_features_to_file(name, project, token_iter,file_writer):
-    num=0
     print('write_features_to_file method called')
     print('Thread:{} Start init.'.format(name))
     features = Features(project, token_iter)
     print('Thread:{} end init.'.format(name))
     for i in features.get_pull_request_features():
-        if num > 20:
-            break
         if i is not None:
-            print('Project: {}, examples: {}'.format(name, num))
+            print('Project: {}, examples: {}'.format(name))
             file_writer.write(json.dumps(i)+'\n')
-            num+=1
     print('{} finished.'.format(name))
 
 if __name__ == '__main__':
