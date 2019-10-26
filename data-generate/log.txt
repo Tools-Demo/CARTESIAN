@@ -1,0 +1,23 @@
+Data extraction in progress...
+NixOS/nixpkgs
+write_features_to_file method called
+Thread:NixOS/nixpkgs Start init.
+Project API called
+Contributors API called
+WARNING:root:$$$$$$$$ Exception: HTTPSConnectionPool(host='api.github.com', port=443): Max retries exceeded with url: /repositories/4542716/pulls?state=open&per_page=20&access_token=049f396818e2258a9c21903d37c8d6aaccb15bb4&page=13 (Caused by ProxyError('Cannot connect to proxy.', timeout('_ssl.c:703: The handshake operation timed out',))), Sleep: 60s
+Pull Request API called
+--- Logging error ---
+Traceback (most recent call last):
+  File "C:\Users\IlyasAzeem\Anaconda3\envs\env35\lib\logging\__init__.py", line 988, in emit
+    stream.write(msg)
+  File "C:\Users\IlyasAzeem\Anaconda3\envs\env35\lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+UnicodeEncodeError: 'charmap' codec can't encode character '\uff1a' in position 19: character maps to <undefined>
+Call stack:
+  File "E:/Research Work/Pull Request Project/ExperimentsOfPR/prioritize-pull-requests/data-generate/features.py", line 583, in <module>
+    write_features_to_file(project['full_name'], project, next(token_iter), file_writer)
+  File "E:/Research Work/Pull Request Project/ExperimentsOfPR/prioritize-pull-requests/data-generate/features.py", line 565, in write_features_to_file
+    features = Features(project, token_iter)
+  File "E:/Research Work/Pull Request Project/ExperimentsOfPR/prioritize-pull-requests/data-generate/features.py", line 114, in __init__
+    Statistics1 = get_request_body('https://api.github.com/repos/'+self.project['full_name']+'/stats/commit_activity?per_page=100&access_token='+self.token)
+WARNING:root:$$$$$$$$ Exception: 'charmap' codec can't encode character '\uff1a' in position 172: character maps to <undefined>, Sleep: 60s
