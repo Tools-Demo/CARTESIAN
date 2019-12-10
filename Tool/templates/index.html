@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+<meta charset="UTF-8">
+<title>CARTESIAN</title>
+<style>
+    body
+    {
+	text-align: center;
+	height: 100%;
+}
+
+.bgImg {
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	bottom: 0px;
+	right: 0px;
+	width: 100%;
+	height: 100%;
+}
+
+.logo {
+	width: 800px;
+}
+
+.form_text_color {
+	color: #e6e6e6;
+	font-size: 18px;
+}
+
+.bidTitle {
+	/*text-align: center;*/
+	color: #e6e6e6;
+	font-size: 34px;
+	font-weight: 600;
+	margin-bottom: 30px;
+}
+
+.logCon {
+	/*text-align: center;*/
+	color: #FFFFFF;
+	margin-top: 40px;
+}
+
+.line {}
+
+body .content {
+	/*text-align: center;*/
+	/*width: 42%;*/
+	margin-left: 5%;
+	position: fixed;
+	background: #0f1a1494;
+	left: 29%;
+	padding: 5% 1%;
+	margin-top: 12%;
+	border-radius: 5px;
+}
+
+body .logingBut {
+	background: #2d8c5fa6;
+	border: none;
+	padding: 12px 0px;
+	color: #edefee;
+	border-radius: 2px;
+	width: 100px;
+	margin-left: 30px;
+	margin-top: 5px;
+    z-index: 1000;
+}
+
+body .bt_input {
+	border-radius: 2px;
+	border: none;
+	padding: 11px 5px;
+	/*width: 330px;*/
+	margin-right: 20px;
+	color: #333;
+	margin-left: 5px;
+	margin-bottom: 18px;
+	background: #ffffffd9;
+     z-index: 1000;
+}
+
+body .logCon span {
+	font-size: 18px;
+	height: 40px;
+	line-height: 40px;
+}
+
+.wrapper {
+	/*text-align: center;*/
+	display: grid;
+	/*grid-template-columns: 400px;*/
+	grid-template-rows: 50px 50px 50px 60px;
+	grid-template-columns: 140px 350px;
+}
+
+.display_zone {
+	font-weight:bold;
+	font-size:18px;
+	color:#ff9955;
+}
+
+.tableres {
+	background-color:#FFF;
+	text-align: left; 
+	border: 1px solid #ddd;
+	border-collapse: collapse;
+}
+
+#result_table {
+   	background-color:#FFF;
+	text-align: left; 
+	border: 1px solid #ddd;
+	border-collapse: collapse;
+}
+#result_table th{
+    	font-weight:bold;
+	font-size:18px;
+	color:#FFF;
+}
+
+</style>
+
+</head>
+
+<body>
+<img src="static/img/bgImg.jpg" class="bgImg" />
+<div class="content">
+    <div class="bidTitle">CARTESIAN</div>
+    <div class="wrapper">
+        <div>
+            <span class="form_text_color">Repo Name:</span>
+        </div>
+        <div>
+            <input class="bt_input" type="text" style="width: 330px;" id="input_repo"/>
+        </div>
+        <div>
+            <span class="form_text_color">Access Token:</span>
+        </div>
+        <div>
+            <input class="bt_input" type="password" style="width: 330px;" id="input_token"/>
+        </div>
+        <div>
+            <span class="form_text_color">Number of PRs:</span>
+        </div>
+        <div>
+            <input class="bt_input" type="text" style="width: 330px;" id="input_num" value="20"/>
+        </div>
+        <div>
+            <input onclick="submit_all()" id="start" type="button" value="Start" class="logingBut" style="margin-left:105%" onmouseover="this.style.cursor='hand'"></input>
+        </div>
+        <div>
+            <input onclick="clear_all()" id="clear" type="button" value="Clear" class="logingBut" onmouseover="this.style.cursor='hand'"></input>
+        </div>
+    </div>
+		<div>
+            <span class="form_text_color">Note: Please use google chrome browser for CARTESIAN.</span>
+        </div>
+    <div>
+        <span class="display_zone" id="info"></span>
+    </div>
+    <div id="tbs">
+        <table border="3" id="result_table"></table>
+    </div>
+</div>
+<script src="http://code.jquery.com/jquery-latest.js"></script>
+<script>
+//限制键盘只能按数字键、小键盘数字键、退格键
+    $("#input_num").keydown(function (e) {
+        var code = parseInt(e.keyCode);
+        if (code >= 96 && code <= 105 || code >= 48 && code <= 57 || code === 8) {
+            return true;
+        } else {
+            return false;
+        }
+    });
+
+    //文本框输入事件,任何非正整数的输入都重置为1
+    $("#input_num").bind("input propertychange", function () {
+       if (isNaN(parseFloat($(this).val())) || parseFloat($(this).val()) <= 0) $(this).val(1);
+    });
+
+    function clear_all(){
+        $("#input_repo").val("");
+        $("#input_token").val("");
+        $("#input_num").val("20");
+    }
+
+    function submit_all(){
+        repo = $("#input_repo").val();
+        token = $("#input_token").val();
+        num = $("#input_num").val();
+		
+		if(repo == ""){
+			$("#info").html("Please input a valid repo name.");
+			return ;
+		}
+		if(token == ""){
+			$("#info").html("Please input a valid access token.");
+			return ;
+		}
+		if(num == ""){
+			$("#info").html("Please input the number of PRs you want to extract.");
+			return ;
+		}
+		
+        words_json = 
+		{
+            "repo": repo,
+            "token": token,
+            "num": num,
+
+        };
+        $("#info").html("Pull request extraction in progress. Be patient the extraction will take long time. Don't press start button multiple times.");
+        $.ajax({
+            //async: false,
+            type: "post",
+            //timeout : 300000,
+            url: "/pull",
+            dataType: "json",
+            data: JSON.stringify(words_json),
+            success: function (data) {
+                $("#info").html(data.msg);
+                if(data.tag !== 'wrong'){
+                    $("#info").html("Features extraction in progress..");
+                     $.ajax({
+                        //async: false,
+                        type: "post",
+                        //timeout : 300000,
+                        url: "/features",
+                        dataType: "json",
+                        data: JSON.stringify(words_json),
+                        success: function (data) {
+                            $("#info").html(data.msg);
+                            if(data.tag !== 'wrong'){
+                                $("#info").html("Processing in progress..");
+                                $.ajax({
+                                    //async: false,
+                                    type: "post",
+                                    //timeout : 300000,
+                                    url: "/model",
+                                    dataType: "json",
+                                    data: JSON.stringify(words_json),
+                                    success: function (data) {
+                                        $("#result_table").html(data.table);
+                                        $("#info").html("Processing completed!");
+                                        $("#tbs").append("<button type='button' onclick='submit_preference()' style='margin-top: 10px'>Submit!</button>");
+                                    }
+                                });
+                            }
+
+                        }
+                    });
+                }
+
+            }
+        });
+
+
+
+
+    }
+
+	function submit_preference(){
+		var arr=[];
+		$('#tbs input[type="radio"]:checked').each(function(){
+			console.log($(this).attr("name"));
+			//alert($(this).attr("name"));
+			//alert($(this).val());
+			var single = [];
+			var prefer = $(this).val();
+			var Pull_Request_Title = $(this).parent().prev().text();
+			var ID = $(this).parent().prev().prev().text();
+			single.push(ID);
+			single.push(Pull_Request_Title);
+			single.push(prefer);
+			arr.push(single);
+		});
+		if (arr.length > 0){
+			pref_json = {"pref": arr};
+			$.ajax({
+				type: "post",
+				url: "/file_store",
+				dataType: "json",
+				data: JSON.stringify(pref_json),
+				success: function (data) {
+					alert("System has stored your choose!")
+				}
+			});
+		}
+	}
+    
+</script>
+</body>
+
+</html>
